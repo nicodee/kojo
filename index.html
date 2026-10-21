@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stockholm: Choose-Your-Own-Vibe Weekend Guide</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #38bdf8;
+      --primary-hover: #0284c7;
+      --accent: #f59e0b;
+      --tag-bg: #0ea5e920;
+      --tag-text: #38bdf8;
+      --warning-bg: #ef444420;
+      --warning-text: #f87171;
+      --success-bg: #10b98120;
+      --success-text: #34d399;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      padding-bottom: 80px;
+    }
+
+    header {
+      background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+      padding: 2.5rem 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--card-border);
+      text-align: center;
+    }
+
+    .badge-pill {
+      display: inline-block;
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.75rem;
+      border: 1px solid #38bdf840;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+
+    p.subtitle {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 600px;
+      margin: 0 auto 1.25rem;
+    }
+
+    .key-alerts {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .alert-chip {
+      background: #1e293b;
+      border: 1px solid var(--card-border);
+      padding: 0.4rem 0.85rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .alert-chip.warning {
+      border-color: #ef444460;
+      background: #ef444415;
+      color: #fca5a5;
+    }
+
+    .alert-chip.success {
+      border-color: #10b98160;
+      background: #10b98115;
+      color: #6ee7b7;
+    }
+
+    /* Sticky Navigation */
+    .nav-container {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: #0f172af0;
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0.75rem 1rem;
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .nav-btn {
+      background: var(--card-bg);
+      color: var(--text-muted);
+      border: 1px solid var(--card-border);
+      padding: 0.45rem 0.9rem;
+      border-radius: 9999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .nav-btn:hover, .nav-btn.active {
+      background: var(--primary);
+      color: #0f172a;
+      border-color: var(--primary);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1000px;
+      margin: 1.5rem auto;
+      padding: 0 1rem;
+    }
+
+    /* Section Styling */
+    section {
+      margin-bottom: 3rem;
+      scroll-margin-top: 70px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.25rem;
+      border-bottom: 2px solid var(--card-border);
+      padding-bottom: 0.5rem;
+    }
+
+    .section-header h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Timeline & Itinerary */
+    .timeline-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+    }
+
+    .day-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+
+    .day-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #33415560;
+    }
+
+    .day-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .schedule-item {
+      display: flex;
+      gap: 1rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #33415530;
+    }
+
+    .schedule-item:last-child {
+      border-bottom: none;
+    }
+
+    .schedule-time {
+      font-weight: 700;
+      font-size: 0.85rem;
+      color: var(--accent);
+      min-width: 75px;
+    }
+
+    .schedule-content h4 {
+      font-size: 0.95rem;
+      margin-bottom: 0.2rem;
+    }
+
+    .schedule-content p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Place Cards Grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: #38bdf880;
+    }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      background: #334155;
+      color: #e2e8f0;
+    }
+
+    .cost-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #34d399;
+    }
+
+    .card h3 {
+      font-size: 1.15rem;
+      margin-bottom: 0.4rem;
+      line-height: 1.3;
+    }
+
+    .card p.desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      flex-grow: 1;
+    }
+
+    .card-footer {
+      border-top: 1px solid #33415550;
+      padding-top: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+    }
+
+    .maps-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .maps-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Callout Box */
+    .callout {
+      background: #1e293b;
+      border-left: 4px solid var(--primary);
+      padding: 1rem 1.25rem;
+      border-radius: 0 8px 8px 0;
+      margin: 1.5rem 0;
+    }
+
+    .callout.danger {
+      border-left-color: #ef4444;
+      background: #ef444410;
+    }
+
+    .callout h4 {
+      margin-bottom: 0.25rem;
+      font-size: 1rem;
+    }
+
+    .callout p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Comparison Table */
+    .table-container {
+      overflow-x: auto;
+      margin: 1rem 0;
+      border-radius: 8px;
+      border: 1px solid var(--card-border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    th {
+      background: #1e293b;
+      color: #e2e8f0;
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background: #182234;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--card-border);
+      margin-top: 3rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="badge-pill">Insider Weekend Guide</div>
+    <h1>Stockholm: Choose Your Vibe</h1>
+    <p class="subtitle">Curated for Kojo's first visit from France — MBA-friendly, verified student budgets, zero advance booking required.</p>
+    
+    <div class="key-alerts">
+      <div class="alert-chip warning">
+        <span>⚠️</span> <strong>SL Transit:</strong> Stick to standard adult 43 SEK contactless tap. International student IDs are not valid for transit (avoids 1,850 SEK fine).
+      </div>
+      <div class="alert-chip success">
+        <span>🚢</span> <strong>Ferry 82 Included:</strong> Commuter ferry between Slussen, Skeppsholmen & Djurgården is covered by regular 43 SEK metro fare!
+      </div>
+      <div class="alert-chip">
+        <span>💳</span> <strong>100% Cashless:</strong> Only bank cards and Apple/Google Pay accepted.
+      </div>
+    </div>
+  </header>
+
+  <!-- Sticky Nav -->
+  <div class="nav-container">
+    <a href="#itinerary" class="nav-btn active">Weekend Plan</a>
+    <a href="#vibe-views" class="nav-btn">Free Views & Walks</a>
+    <a href="#vibe-museums" class="nav-btn">Museums & Culture</a>
+    <a href="#vibe-tech" class="nav-btn">MBA & Innovation</a>
+    <a href="#vibe-eats" class="nav-btn">Food, Fika & Beer</a>
+    <a href="#rain-pivots" class="nav-btn">Rain Backups</a>
+    <a href="#transit-tips" class="nav-btn">Transit Cheat Sheet</a>
+  </div>
+
+  <div class="container">
+
+    <!-- ITINERARY SECTION -->
+    <section id="itinerary">
+      <div class="section-header">
+        <h2><span>📅</span> The Plug-and-Play Weekend Blueprint</h2>
+      </div>
+
+      <div class="timeline-grid">
+        <!-- Saturday -->
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-title">Saturday: Historic Core & Södermalm Panorama</span>
+            <span class="card-tag">Walking & Views</span>
+          </div>
+
+          <div class="schedule-item">
+            <div class="schedule-time">09:30 AM</div>
+            <div class="schedule-content">
+              <h4>Fika Kickoff at Vete-Katten</h4>
+              <p>Historic 1928 bakery on Kungsgatan. Order a Cardamom bun (<em>Kardemummabulle</em>) and brewed drip coffee (<em>bryggkaffe</em>) with free refill (<em>påtår</em>).</p>
+            </div>
+          </div>
+
+          <div class="schedule-item">
+            <div class="schedule-time">10:45 AM</div>
+            <div class="schedule-content">
+              <h4>Stroll Gamla Stan & Riddarholmen Quay</h4>
+              <p>Explore Stortorget, walk Stockholm's narrowest street (Mårten Trotzigs Gränd), then step onto Riddarholmen for classic Lake Mälaren views across to City Hall.</p>
+            </div>
+          </div>
+
+          <div class="schedule-item">
+            <div class="schedule-time">12:45 PM</div>
+            <div class="schedule-content">
+              <h4>Swedish Meatballs in Södermalm</h4>
+              <p>Sit at the bar counter at <strong>Meatballs for the People</strong> (moose, wild boar, or classic beef/pork; ~245–275 SEK). <em>Budget alternative:</em> IKEA City Gallerian (~79 SEK) or K25.</p>
+            </div>
+          </div>
+
+          <div class="schedule-item">
+            <div class="schedule-time">02:45 PM</div>
+            <div class="schedule-content">
+              <h4>Monteliusvägen Panoramic Cliff Path</h4>
+              <p>Walk the 500-meter wooden path along Södermalm's northern cliffs for the best free skyline vista in town. Admire the 18th-century red wooden cottages.</p>
+            </div>
+          </div>
+
+          <div class="schedule-item">
+            <div class="schedule-time">04:15 PM</div>
+            <div class="schedule-content">
+              <h4>Explore SoFo (South of Folkungagatan)</h4>
+              <p>Vintage stores, local fashion boutiques, and coffee stops around Nytorget square.</p>
+            </div>
+          </div>
+
+          <div class="schedule-item">
+            <div class="schedule-time">06:30 PM</div>
+            <div class="schedule-content">
+              <h4>Fotografiska Museum & Top-Floor Observation Bar</h4>
+              <p>Open late until 23:00. Show French/MBA student ID for 135 SEK ticket (saves 60 SEK). Enjoy a Baltic harbor sunset drink in the 6th-floor panoramic bistro.</p>
+            </div>
+          </div>
+
+          <div class="schedule-item">
+            <div class="schedule-time">09:00 PM</div>
+            <div class="schedule-content">
+              <h4>Casual Craft Beers & Nightlife</h4>
+              <p>Head to <strong>Omnipollos Hatt</strong> for experimental craft fruit sours and wood-fired pizza, or <strong>Morfar Ginko</strong> for basement ping-pong and student vibes.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sunday -->
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-title">Sunday: Maritime History, Modern Design & Tech Vibes</span>
+            <span class="card-tag">Harbor Ferry & Tech</span>
+          </div>
+
+          <div class="schedule-item">
+            <div class="schedule-time">09:30 AM</div>
+            <div class="schedule-content">
+              <h4>Commuter Ferry 82 to Royal Djurgården</h4>
+              <p>Board the ferry at Slussen. Covered by regular 43 SEK SL transit ticket; panoramic water crossing past Skeppsholmen.</p>
+            </div>
+          </div>
+
+          <div class="schedule-item">
+            <div class="schedule-time">10:00 AM</div>
+            <div class="schedule-content">
+              <h4>The Vasa Museum (Vasamuseet)</h4>
+              <p>Step inside to see the intact 1628 warship salvaged after 333 years underwater. <em>MBA angle:</em> Classic case study on executive scope creep and governance failure. (195 SEK adult admission).</p>
+            </div>
+          </div>
+
+          <div class="schedule-item">
+            <div class="schedule-time">12:15 PM</div>
+            <div class="schedule-content">
+              <h4>Djurgården Waterfront Stroll</h4>
+              <p>Walk through royal parkland along the Baltic quays, taking in autumn foliage and historic canal views.</p>
+            </div>
+          </div>
+
+          <div class="schedule-item">
+            <div class="schedule-time">01:15 PM</div>
+            <div class="schedule-content">
+              <h4>Ferry to Skeppsholmen & ArkDes (FREE Admission)</h4>
+              <p>Hop Ferry 82 back to Skeppsholmen. Explore the newly reopened ArkDes (Sweden's national design & architecture museum, redesigned with sustainable circular materials). 100% free.</p>
+            </div>
+          </div>
+
+          <div class="schedule-item">
+            <div class="schedule-time">03:15 PM</div>
+            <div class="schedule-content">
+              <h4>Hobo Hotel & Urban Escape (Brunkebergstorg)</h4>
+              <p>Cross the gilded Skeppsholmsbron bridge to Brunkebergstorg. Settle into Hobo's open lobby tech lounge, check out the SPACEby indie startup showcase, and head to TAK on the 13th floor for rooftop city views.</p>
+            </div>
+          </div>
+
+          <div class="schedule-item">
+            <div class="schedule-time">04:45 PM</div>
+            <div class="schedule-content">
+              <h4>Specialty Fika at Café Pascal (Vasastan)</h4>
+              <p>Award-winning Scandinavian specialty coffee roaster favored by local founders and designers.</p>
+            </div>
+          </div>
+
+          <div class="schedule-item">
+            <div class="schedule-time">06:00 PM</div>
+            <div class="schedule-content">
+              <h4>Subterranean T-Bana Art Tour</h4>
+              <p>Hop on the Blue Line at T-Centralen (blue floral bedrock cavern) to Stadion (giant rainbow vault) and Solna Centrum (dramatic red-and-green forest). World's longest art gallery on a 43 SEK ticket.</p>
+            </div>
+          </div>
+
+          <div class="schedule-item">
+            <div class="schedule-time">08:00 PM</div>
+            <div class="schedule-content">
+              <h4>Traditional Dinner at Restaurang Kvarnen</h4>
+              <p>Historic 1908 beer hall on Södermalm. Hearty Swedish husmanskost, local cider, and unpretentious local crowd.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Monday -->
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-title">Monday: Farewell Sprint & Airport Transfer</span>
+            <span class="card-tag">Departure</span>
+          </div>
+
+          <div class="schedule-item">
+            <div class="schedule-time">08:30 AM</div>
+            <div class="schedule-content">
+              <h4>Morning Kanelbulle & Coffee</h4>
+              <p>Grab a warm cinnamon bun from a local neighborhood bakery (Fabrique or Bröd & Salt).</p>
+            </div>
+          </div>
+
+          <div class="schedule-item">
+            <div class="schedule-time">09:15 AM</div>
+            <div class="schedule-content">
+              <h4>Skeppsbron Waterfront Breathe</h4>
+              <p>Final quick waterfront stroll past the Royal Palace before retrieving bags from accommodation.</p>
+            </div>
+          </div>
+
+          <div class="schedule-item">
+            <div class="schedule-time">10:30 AM</div>
+            <div class="schedule-content">
+              <h4>Airport Transit from Cityterminalen</h4>
+              <p>Take Flygbussarna coach (99 SEK Youth &le;25 / 129 SEK Adult via app; 45 mins) or Arlanda Express (160 SEK Youth &le;25 / 340 SEK Adult; 18 mins) back to Arlanda (ARN).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIBE 1: FREE VIEWS & WALKS -->
+    <section id="vibe-views">
+      <div class="section-header">
+        <h2><span>🏰</span> Vibe 1: Free Views & Historic Walks</h2>
+      </div>
+
+      <div class="cards-grid">
+        <div class="card">
+          <div>
+            <div class="card-meta">
+              <span class="card-tag">Gamla Stan</span>
+              <span class="cost-badge">FREE</span>
+            </div>
+            <h3>Gamla Stan Medieval Alleys</h3>
+            <p class="desc">One of Europe's best-preserved 13th-century medieval old towns. Ochre townhouses, cobblestones, Stortorget, and Mårten Trotzigs Gränd (90 cm wide).</p>
+          </div>
+          <div class="card-footer">
+            <span>T-Bana: Gamla Stan</span>
+            <a href="https://www.google.com/maps/search/?api=1&query=Stortorget+Stockholm" target="_blank" class="maps-link">Open Maps →</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="card-meta">
+              <span class="card-tag">Södermalm</span>
+              <span class="cost-badge">FREE</span>
+            </div>
+            <h3>Monteliusvägen Cliff Path</h3>
+            <p class="desc">500m wooden cliff walk overlooking Lake Mälaren, Riddarholmen, and the City Hall tower. Unbeatable at sunset; bypasses commercial observation decks.</p>
+          </div>
+          <div class="card-footer">
+            <span>T-Bana: Mariatorget</span>
+            <a href="https://www.google.com/maps/search/?api=1&query=Monteliusvagen+Stockholm" target="_blank" class="maps-link">Open Maps →</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="card-meta">
+              <span class="card-tag">Skeppsholmen</span>
+              <span class="cost-badge">FREE</span>
+            </div>
+            <h3>Skeppsholmen & Gilded Crown</h3>
+            <p class="desc">Tranquil naval island with tall wooden ships, citadel views on Kastellholmen, and the iconic golden crown on the Skeppsholmsbron bridge.</p>
+          </div>
+          <div class="card-footer">
+            <span>Ferry 82 / Tram 7</span>
+            <a href="https://www.google.com/maps/search/?api=1&query=Skeppsholmsbron+Stockholm" target="_blank" class="maps-link">Open Maps →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIBE 2: MUSEUMS & CULTURE -->
+    <section id="vibe-museums">
+      <div class="section-header">
+        <h2><span>🏛️</span> Vibe 2: World-Class Museums & Culture</h2>
+      </div>
+
+      <div class="cards-grid">
+        <div class="card">
+          <div>
+            <div class="card-meta">
+              <span class="card-tag">Djurgården</span>
+              <span class="cost-badge">195 SEK</span>
+            </div>
+            <h3>The Vasa Museum</h3>
+            <p class="desc">The world's only intact 17th-century warship, salvaged with 98% original timber intact. Supreme business school case study in project governance. <em>Note: No student rate exists.</em></p>
+          </div>
+          <div class="card-footer">
+            <span>Hours: 10:00–17:00</span>
+            <a href="https://www.google.com/maps/search/?api=1&query=Vasa+Museum+Stockholm" target="_blank" class="maps-link">Open Maps →</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="card-meta">
+              <span class="card-tag">Södermalm</span>
+              <span class="cost-badge">135 SEK (Student)</span>
+            </div>
+            <h3>Fotografiska Contemporary Art</h3>
+            <p class="desc">Restored 1906 industrial customs house. Open late until 23:00! Accepts international/French student IDs (saves 60 SEK). World-class photo exhibits and top-floor harbor bar.</p>
+          </div>
+          <div class="card-footer">
+            <span>Open late until 23:00</span>
+            <a href="https://www.google.com/maps/search/?api=1&query=Fotografiska+Stockholm" target="_blank" class="maps-link">Open Maps →</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="card-meta">
+              <span class="card-tag">Skeppsholmen</span>
+              <span class="cost-badge">FREE</span>
+            </div>
+            <h3>ArkDes Architecture Centre</h3>
+            <p class="desc">Reopened autumn 2024 with sustainable circular design by Arrhov Frick. Showcases Sweden's functionalist urban design and architectural archives. Free admission.</p>
+          </div>
+          <div class="card-footer">
+            <span>Hours: 10:00–18:00</span>
+            <a href="https://www.google.com/maps/search/?api=1&query=ArkDes+Stockholm" target="_blank" class="maps-link">Open Maps →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIBE 3: MBA & INNOVATION -->
+    <section id="vibe-tech">
+      <div class="section-header">
+        <h2><span>💡</span> Vibe 3: MBA, Tech & Innovation Culture</h2>
+      </div>
+
+      <div class="cards-grid">
+        <div class="card">
+          <div>
+            <div class="card-meta">
+              <span class="card-tag">Norrmalm</span>
+              <span class="cost-badge">Free Walk-in</span>
+            </div>
+            <h3>Hobo Hotel & Urban Escape</h3>
+            <p class="desc">Stockholm's liveliest weekend startup and creative hub. Open lobby coworking, coffee, the SPACEby indie innovation pop-up, and TAK rooftop on floor 13.</p>
+          </div>
+          <div class="card-footer">
+            <span>Brunkebergstorg 4</span>
+            <a href="https://www.google.com/maps/search/?api=1&query=Hobo+Hotel+Stockholm" target="_blank" class="maps-link">Open Maps →</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="card-meta">
+              <span class="card-tag">City Center</span>
+              <span class="cost-badge">FREE Walk</span>
+            </div>
+            <h3>The Stockholm Unicorn Mile</h3>
+            <p class="desc">Walk from Brunkebergstorg along Malmskillnadsgatan to Stureplan. The stomping ground of EQT, Spotify, Klarna, Creandum, and Northzone venture partners.</p>
+          </div>
+          <div class="card-footer">
+            <span>Route: City Center</span>
+            <a href="https://www.google.com/maps/search/?api=1&query=Brunkebergstorg+Stockholm" target="_blank" class="maps-link">Open Maps →</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="card-meta">
+              <span class="card-tag">Subway Network</span>
+              <span class="cost-badge">43 SEK</span>
+            </div>
+            <h3>T-Bana Art Underground Tour</h3>
+            <p class="desc">Experience Nordic public design innovation. 90+ metro stations turned into subterranean cave galleries. Hop on the Blue Line to T-Centralen and Solna Centrum.</p>
+          </div>
+          <div class="card-footer">
+            <span>SL Blue Line</span>
+            <a href="https://www.google.com/maps/search/?api=1&query=T-Centralen+metro+station" target="_blank" class="maps-link">Open Maps →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIBE 4: FOOD, FIKA & BEER -->
+    <section id="vibe-eats">
+      <div class="section-header">
+        <h2><span>☕</span> Vibe 4: Eats, Fika & Nightlife</h2>
+      </div>
+
+      <div class="cards-grid">
+        <div class="card">
+          <div>
+            <div class="card-meta">
+              <span class="card-tag">Fika Institution</span>
+              <span class="cost-badge">65–95 SEK</span>
+            </div>
+            <h3>Vete-Katten (1928)</h3>
+            <p class="desc">Old-world labyrinth of vintage salons and brass counters. Cardamom buns and green Prinsesstårta. Don't miss free drip coffee refills (<em>påtår</em>)!</p>
+          </div>
+          <div class="card-footer">
+            <span>Kungsgatan 55</span>
+            <a href="https://www.google.com/maps/search/?api=1&query=Vete-Katten+Kungsgatan" target="_blank" class="maps-link">Open Maps →</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="card-meta">
+              <span class="card-tag">Specialty Coffee</span>
+              <span class="cost-badge">50–85 SEK</span>
+            </div>
+            <h3>Café Pascal</h3>
+            <p class="desc">Acclaimed specialty micro-roaster in Vasastan. Minimalist Scandinavian interior, exceptional pour-overs, and artisan baked goods.</p>
+          </div>
+          <div class="card-footer">
+            <span>Norrtullsgatan 4</span>
+            <a href="https://www.google.com/maps/search/?api=1&query=Cafe+Pascal+Stockholm" target="_blank" class="maps-link">Open Maps →</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="card-meta">
+              <span class="card-tag">Authentic Meatballs</span>
+              <span class="cost-badge">245–275 SEK</span>
+            </div>
+            <h3>Meatballs for the People</h3>
+            <p class="desc">Artisanal meatball hub in SoFo. Moose, wild boar, beef/pork, and veggie meatballs with lingonberries and potato purée. Sit at the kitchen bar counter for drop-in dining.</p>
+          </div>
+          <div class="card-footer">
+            <span>Nytorgsgatan 30</span>
+            <a href="https://www.google.com/maps/search/?api=1&query=Meatballs+for+the+People+Stockholm" target="_blank" class="maps-link">Open Maps →</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="card-meta">
+              <span class="card-tag">Student Meatball Hack</span>
+              <span class="cost-badge">69–89 SEK</span>
+            </div>
+            <h3>IKEA Stockholm City</h3>
+            <p class="desc">Located inside Gallerian mall right in the city center. Get a classic, authentic Swedish plate of 8–12 meatballs, mash, gravy, and lingonberries at true student prices.</p>
+          </div>
+          <div class="card-footer">
+            <span>Gallerian, Hamngatan</span>
+            <a href="https://www.google.com/maps/search/?api=1&query=IKEA+Stockholm+City+Gallerian" target="_blank" class="maps-link">Open Maps →</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="card-meta">
+              <span class="card-tag">Craft Beer</span>
+              <span class="cost-badge">Beer & Pizza</span>
+            </div>
+            <h3>Omnipollos Hatt</h3>
+            <p class="desc">World-famous Swedish cult brewery taproom. Serves boundary-pushing fruit sours, stouts, and wood-fired pizzas in an intimate, buzzing room on Södermalm.</p>
+          </div>
+          <div class="card-footer">
+            <span>Hökens Gata 1A</span>
+            <a href="https://www.google.com/maps/search/?api=1&query=Omnipollos+Hatt+Stockholm" target="_blank" class="maps-link">Open Maps →</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div>
+            <div class="card-meta">
+              <span class="card-tag">Beer Hall (1908)</span>
+              <span class="cost-badge">Open until 03:00</span>
+            </div>
+            <h3>Restaurang Kvarnen</h3>
+            <p class="desc">Historic rustic beer hall by Medborgarplatsen. Classic husmanskost, lively local crowd, Hammarby sports history, and late-night weekend bar.</p>
+          </div>
+          <div class="card-footer">
+            <span>Tjärhovsgatan 4</span>
+            <a href="https://www.google.com/maps/search/?api=1&query=Kvarnen+Stockholm" target="_blank" class="maps-link">Open Maps →</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RAIN PIVOTS -->
+    <section id="rain-pivots">
+      <div class="section-header">
+        <h2><span>☔</span> Rain & Cold Weather Pivots</h2>
+      </div>
+
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Outdoor Plan A</th>
+              <th>Warm Indoor Pivot</th>
+              <th>Why It Works</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Monteliusvägen cliff walk</td>
+              <td><strong>ArkDes (Skeppsholmen)</strong></td>
+              <td>Warm, spacious, cutting-edge circular design gallery. <strong>100% free admission</strong>. <em>(Note: Asplund library rotunda is closed for restoration until 2028).</em></td>
+            </tr>
+            <tr>
+              <td>Djurgården park stroll</td>
+              <td><strong>Östermalm Saluhall</strong></td>
+              <td>Magnificent 1888 brick-and-iron covered food hall. Free entry, bustling food stalls, warm and fragrant.</td>
+            </tr>
+            <tr>
+              <td>Street wandering</td>
+              <td><strong>Underground T-Bana Art Tour</strong></td>
+              <td>Stay completely dry exploring bedrock station murals on the Blue Line for a single 43 SEK metro ticket.</td>
+            </tr>
+            <tr>
+              <td>Outdoor bar terrace</td>
+              <td><strong>Fotografiska 6th-Floor Bistro</strong></td>
+              <td>Panoramic floor-to-ceiling glass observation lounge looking across the stormy Baltic harbor until 23:00.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TRANSIT CHEAT SHEET -->
+    <section id="transit-tips">
+      <div class="section-header">
+        <h2><span>🚇</span> Practical Transit & Money Cheat Sheet</h2>
+      </div>
+
+      <div class="timeline-grid">
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-title">SL Public Transit Rules</span>
+            <span class="card-tag">Strict Enforcement</span>
+          </div>
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.75rem;">
+            Stockholm uses contactless open payment. Simply tap your contactless French debit/credit card or Apple/Google Pay at the turnstiles and bus card readers.
+          </p>
+          <ul style="font-size: 0.88rem; color: var(--text-muted); padding-left: 1.25rem; line-height: 1.6;">
+            <li><strong>Single Ticket:</strong> 43 SEK (valid for 75 minutes across all metros, buses, trams, and Ferry 82).</li>
+            <li><strong>DO NOT buy SL student fares:</strong> Reduced transit tickets legally require a Swedish Mecenat card with the SL logo. French student cards and ISIC are not valid on SL transit. Penalty fare is <strong>1,850 SEK</strong>.</li>
+            <li><strong>Harbor Commuter Ferries:</strong> Ferry 82 between Slussen, Skeppsholmen, and Allmänna Gränd (Djurgården) takes standard SL tickets!</li>
+          </ul>
+        </div>
+
+        <div class="day-card">
+          <div class="day-header">
+            <span class="day-title">Airport Transit (Arlanda ARN)</span>
+            <span class="card-tag">Youth &le;25 Hack</span>
+          </div>
+          <ul style="font-size: 0.88rem; color: var(--text-muted); padding-left: 1.25rem; line-height: 1.6;">
+            <li><strong>Flygbussarna Airport Coach (45 mins):</strong> <strong>99 SEK Youth (&le;25)</strong> or <strong>129 SEK Adult (26+)</strong> when purchased via the Flygbussarna app/website. Direct to Cityterminalen. Free Wi-Fi.</li>
+            <li><strong>Arlanda Express (18 mins):</strong> <strong>160 SEK Youth (&le;25)</strong> with valid ID. Standard adult tickets (26+) are 340 SEK.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <p>Stockholm Insider Guide &bull; Built for Kojo &bull; 100% Cashless &bull; Enjoy Sweden!</p>
+  </footer>
+
+</body>
+</html>
