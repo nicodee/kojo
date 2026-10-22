@@ -12,12 +12,9 @@
     "@mantine/core": "^7.6.2",
     "@mantine/hooks": "^7.6.2",
     "@mantine/notifications": "^7.6.2",
-    "clsx": "^2.1.1",
-    "framer-motion": "^11.0.8",
     "lucide-react": "^0.363.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "tailwind-merge": "^2.2.2"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",

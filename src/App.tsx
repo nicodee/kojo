@@ -29,7 +29,6 @@ import {
   ScrollArea
 } from '@mantine/core';
 import { Notifications, notifications } from '@mantine/notifications';
-import { motion, AnimatePresence } from 'framer-motion';
 import { 
   CloudRain, 
   Sun, 
@@ -400,30 +399,21 @@ export default function App() {
           </Container>
         </AppShell.Header>
 
-        {/* Places Feed with Framer Motion Layout Springs */}
+        {/* Places Feed */}
         <AppShell.Main pt="xs" pb={rem(140)}>
           <Container size="xs" px="md">
-            <AnimatePresence>
-              {rainMode && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, height: 'auto', scale: 1 }}
-                  exit={{ opacity: 0, height: 0, scale: 0.95 }}
-                  transition={{ type: 'spring', stiffness: 350, damping: 25 }}
-                >
-                  <Alert 
-                    variant="light" 
-                    color="blue" 
-                    title="Rain & Cold Weather Mode Active" 
-                    icon={<CloudRain size={18} />}
-                    radius="lg" 
-                    mb="md"
-                  >
-                    Outdoor cliff walks hidden; showing indoor architecture gems (ArkDes) and covered food halls.
-                  </Alert>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {rainMode && (
+              <Alert 
+                variant="light" 
+                color="blue" 
+                title="Rain & Cold Weather Mode Active" 
+                icon={<CloudRain size={18} />}
+                radius="lg" 
+                mb="md"
+              >
+                Outdoor cliff walks hidden; showing indoor architecture gems (ArkDes) and covered food halls.
+              </Alert>
+            )}
 
             <Group justify="space-between" mb="xs" px={rem(2)}>
               <Text size="xs" c="dimmed" fw={500}>
@@ -434,182 +424,158 @@ export default function App() {
               </Text>
             </Group>
 
-            {/* Tactile Motion Card Stack */}
+            {/* Tactile Card Stack */}
             <Stack gap="sm">
-              <AnimatePresence mode="popLayout">
-                {filteredPlaces.map((place, idx) => {
-                  const isQueued = dayQueue.includes(place.id);
-                  const isFirstCardTarget = idx === 0 && showCoachMark && coachStep === 0;
+              {filteredPlaces.map((place, idx) => {
+                const isQueued = dayQueue.includes(place.id);
+                const isFirstCardTarget = idx === 0 && showCoachMark && coachStep === 0;
 
-                  return (
-                    <motion.div
-                      key={place.id}
-                      layout
-                      initial={{ opacity: 0, y: 15 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <Card 
-                        withBorder
-                        radius="lg"
-                        p="md"
-                        style={{
-                          borderColor: isFirstCardTarget ? 'var(--mantine-primary-color-filled)' : undefined,
-                          boxShadow: isFirstCardTarget ? '0 0 0 2px var(--mantine-primary-color-filled)' : undefined,
-                          transition: 'border-color 150ms ease, box-shadow 150ms ease'
-                        }}
-                      >
-                        <Group justify="space-between" align="flex-start" wrap="nowrap">
-                          <Box style={{ flex: 1, minWidth: 0 }}>
-                            <Group gap="xs" mb={6}>
-                              <Badge 
-                                variant="light" 
-                                color="gray" 
-                                size="xs"
-                                leftSection={getCategoryIcon(place.category)}
-                              >
-                                {place.neighborhood}
-                              </Badge>
-                              <Badge 
-                                variant="outline" 
-                                color={place.costSek === 0 ? accentColor : 'gray'} 
-                                size="xs"
-                              >
-                                {place.costLabel}
-                              </Badge>
-                              <Group gap={3} c="dimmed">
-                                <Clock size={12} />
-                                <Text size="xs" span ff="monospace">{place.durationMin}m</Text>
-                              </Group>
-                            </Group>
-
-                            <Title order={5} fw={600} style={{ lineHeight: 1.3 }}>
-                              {place.title}
-                            </Title>
-
-                            <Text size="xs" c="dimmed" lineClamp={2} mt={4} lh="md">
-                              {place.mbaNote}
-                            </Text>
-
-                            <Group gap="xs" mt="xs">
-                              <Button
-                                variant="subtle"
-                                color="gray"
-                                size="compact-xs"
-                                leftSection={<Info size={12} />}
-                                onClick={() => {
-                                  haptics.light();
-                                  setActiveDetailId(place.id);
-                                }}
-                              >
-                                Tips & Transit
-                              </Button>
-
-                              {place.studentDiscountNote.includes('French') && (
-                                <Badge variant="dot" color="indigo" size="xs">
-                                  French MBA ID OK
-                                </Badge>
-                              )}
-                            </Group>
-                          </Box>
-
-                          {/* Spring-Compressed Action Button */}
-                          <motion.div whileTap={{ scale: 0.85 }}>
-                            <ActionIcon
-                              variant={isQueued ? 'filled' : 'light'}
-                              color={isQueued ? accentColor : 'gray'}
-                              size="lg"
-                              radius="md"
-                              onClick={() => toggleQueue(place.id)}
-                              aria-label={isQueued ? 'Remove from day' : 'Add to day'}
-                            >
-                              {isQueued ? <Check size={16} strokeWidth={2.5} /> : <Plus size={16} />}
-                            </ActionIcon>
-                          </motion.div>
+                return (
+                  <Card 
+                    key={place.id}
+                    withBorder
+                    radius="lg"
+                    p="md"
+                    style={{
+                      borderColor: isFirstCardTarget ? 'var(--mantine-primary-color-filled)' : undefined,
+                      boxShadow: isFirstCardTarget ? '0 0 0 2px var(--mantine-primary-color-filled)' : undefined,
+                      transition: 'transform 100ms cubic-bezier(0.32, 0.72, 0, 1), border-color 150ms ease, box-shadow 150ms ease'
+                    }}
+                  >
+                    <Group justify="space-between" align="flex-start" wrap="nowrap">
+                      <Box style={{ flex: 1, minWidth: 0 }}>
+                        <Group gap="xs" mb={6}>
+                          <Badge 
+                            variant="light" 
+                            color="gray" 
+                            size="xs"
+                            leftSection={getCategoryIcon(place.category)}
+                          >
+                            {place.neighborhood}
+                          </Badge>
+                          <Badge 
+                            variant="outline" 
+                            color={place.costSek === 0 ? accentColor : 'gray'} 
+                            size="xs"
+                          >
+                            {place.costLabel}
+                          </Badge>
+                          <Group gap={3} c="dimmed">
+                            <Clock size={12} />
+                            <Text size="xs" span ff="monospace">{place.durationMin}m</Text>
+                          </Group>
                         </Group>
-                      </Card>
-                    </motion.div>
-                  );
-                })}
-              </AnimatePresence>
+
+                        <Title order={5} fw={600} style={{ lineHeight: 1.3 }}>
+                          {place.title}
+                        </Title>
+
+                        <Text size="xs" c="dimmed" lineClamp={2} mt={4} lh="md">
+                          {place.mbaNote}
+                        </Text>
+
+                        <Group gap="xs" mt="xs">
+                          <Button
+                            variant="subtle"
+                            color="gray"
+                            size="compact-xs"
+                            leftSection={<Info size={12} />}
+                            onClick={() => {
+                              haptics.light();
+                              setActiveDetailId(place.id);
+                            }}
+                          >
+                            Tips & Transit
+                          </Button>
+
+                          {place.studentDiscountNote.includes('French') && (
+                            <Badge variant="dot" color="indigo" size="xs">
+                              French MBA ID OK
+                            </Badge>
+                          )}
+                        </Group>
+                      </Box>
+
+                      {/* Action Button */}
+                      <ActionIcon
+                        variant={isQueued ? 'filled' : 'light'}
+                        color={isQueued ? accentColor : 'gray'}
+                        size="lg"
+                        radius="md"
+                        onClick={() => toggleQueue(place.id)}
+                        aria-label={isQueued ? 'Remove from day' : 'Add to day'}
+                      >
+                        {isQueued ? <Check size={16} strokeWidth={2.5} /> : <Plus size={16} />}
+                      </ActionIcon>
+                    </Group>
+                  </Card>
+                );
+              })}
             </Stack>
           </Container>
         </AppShell.Main>
 
-        {/* Sticky Floating Day Tray Dock with Spring Physics */}
+        {/* Sticky Floating Day Tray Dock */}
         <Affix position={{ bottom: 16, right: 16, left: 16 }}>
           <Container size="xs" px={0}>
-            <motion.div
-              whileTap={{ scale: 0.98, y: 1 }}
-              transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+            <Paper
+              withBorder
+              shadow="xl"
+              radius="xl"
+              p="xs"
+              style={{
+                cursor: 'pointer',
+                backdropFilter: 'blur(16px)',
+                boxShadow: (showCoachMark && coachStep === 3) ? '0 0 0 2px var(--mantine-primary-color-filled)' : undefined,
+                transition: 'transform 100ms cubic-bezier(0.32, 0.72, 0, 1)'
+              }}
+              onClick={() => {
+                haptics.medium();
+                setIsTrayOpen(true);
+              }}
             >
-              <Paper
-                withBorder
-                shadow="xl"
-                radius="xl"
-                p="xs"
-                style={{
-                  cursor: 'pointer',
-                  backdropFilter: 'blur(16px)',
-                  boxShadow: (showCoachMark && coachStep === 3) ? '0 0 0 2px var(--mantine-primary-color-filled)' : undefined,
-                }}
-                onClick={() => {
-                  haptics.medium();
-                  setIsTrayOpen(true);
-                }}
-              >
-                <Group justify="space-between" align="center" px="xs">
-                  <Group gap="sm">
-                    <motion.div
-                      key={dayQueue.length}
-                      initial={{ scale: 1.3 }}
-                      animate={{ scale: 1 }}
-                      transition={{ type: 'spring', stiffness: 500, damping: 20 }}
-                    >
-                      <Badge 
-                        size="xl" 
-                        circle 
-                        color={accentColor} 
-                        variant="light"
-                        ff="monospace"
-                        fw={700}
-                      >
-                        {dayQueue.length}
-                      </Badge>
-                    </motion.div>
-                    <div>
-                      <Group gap={6} align="center">
-                        <Text size="xs" fw={700}>
-                          My Stockholm Day
-                        </Text>
-                        <Badge size="xs" variant="outline" color="gray">
-                          {Math.round(totalDurationMin / 60 * 10) / 10} hrs
-                        </Badge>
-                      </Group>
-                      <Text size="xs" c="dimmed" ff="monospace">
-                        Spend: {totalCostSek} SEK (~€{Math.round(totalCostSek / 11.2)})
-                      </Text>
-                    </div>
-                  </Group>
-
-                  <Button
+              <Group justify="space-between" align="center" px="xs">
+                <Group gap="sm">
+                  <Badge 
+                    size="xl" 
+                    circle 
+                    color={accentColor} 
                     variant="light"
-                    color={accentColor}
-                    size="xs"
-                    radius="xl"
-                    rightSection={<ChevronUp size={14} />}
+                    ff="monospace"
+                    fw={700}
                   >
-                    View Route
-                  </Button>
+                    {dayQueue.length}
+                  </Badge>
+                  <div>
+                    <Group gap={6} align="center">
+                      <Text size="xs" fw={700}>
+                        My Stockholm Day
+                      </Text>
+                      <Badge size="xs" variant="outline" color="gray">
+                        {Math.round(totalDurationMin / 60 * 10) / 10} hrs
+                      </Badge>
+                    </Group>
+                    <Text size="xs" c="dimmed" ff="monospace">
+                      Spend: {totalCostSek} SEK (~€{Math.round(totalCostSek / 11.2)})
+                    </Text>
+                  </div>
                 </Group>
-              </Paper>
-            </motion.div>
+
+                <Button
+                  variant="light"
+                  color={accentColor}
+                  size="xs"
+                  radius="xl"
+                  rightSection={<ChevronUp size={14} />}
+                >
+                  View Route
+                </Button>
+              </Group>
+            </Paper>
           </Container>
         </Affix>
 
-        {/* Day Tray Drawer with Slide Gestures */}
+        {/* Day Tray Drawer */}
         <Drawer
           opened={isTrayOpen}
           onClose={() => {
@@ -1024,68 +990,62 @@ export default function App() {
         {showCoachMark && (
           <Affix position={{ top: 124, left: 16, right: 16 }} zIndex={200}>
             <Container size="xs" px={0}>
-              <motion.div
-                initial={{ opacity: 0, y: -15, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -15, scale: 0.95 }}
-                transition={{ type: 'spring', stiffness: 450, damping: 25 }}
+              <Paper 
+                withBorder 
+                shadow="xl" 
+                radius="lg" 
+                p="sm" 
+                style={{
+                  backdropFilter: 'blur(16px)',
+                  borderColor: 'var(--mantine-primary-color-filled)',
+                  transition: 'transform 150ms cubic-bezier(0.32, 0.72, 0, 1)'
+                }}
               >
-                <Paper 
-                  withBorder 
-                  shadow="xl" 
-                  radius="lg" 
-                  p="sm" 
-                  style={{
-                    backdropFilter: 'blur(16px)',
-                    borderColor: 'var(--mantine-primary-color-filled)'
-                  }}
-                >
-                  <Group justify="space-between" align="flex-start" wrap="nowrap">
-                    <Group gap="xs" align="flex-start" wrap="nowrap">
-                      <ThemeIcon size={26} radius="xl" color={accentColor} variant="filled">
-                        <Sparkles size={14} />
-                      </ThemeIcon>
-                      <div>
-                        <Text size="xs" fw={700}>
-                          {coachStep === 0 && 'Tip 1: Queue Your Spots'}
-                          {coachStep === 1 && 'Tip 2: Rain & Freeze Pivot'}
-                          {coachStep === 2 && 'Tip 3: Student Transit Rules'}
-                          {coachStep === 3 && 'Tip 4: Island Route Tray'}
-                        </Text>
-                        <Text size="xs" c="dimmed" mt={2}>
-                          {coachStep === 0 && "Tap '+' on any card to add it to your day queue. Tap 'Tips & Transit' for insider details."}
-                          {coachStep === 1 && "Notice this switch in the header? Toggle it when it rains or sleets to swap outdoor walks."}
-                          {coachStep === 2 && "Tap the SOS icon anytime to verify museum student discounts and transit rules."}
-                          {coachStep === 3 && "The bottom tray groups your day by island so you never backtrack across bridges. Tap it to expand!"}
-                        </Text>
-                      </div>
-                    </Group>
-
-                    <Group gap={6} wrap="nowrap">
-                      <Button 
-                        size="compact-xs" 
-                        color={accentColor} 
-                        radius="md"
-                        onClick={nextCoachStep}
-                      >
-                        {coachStep === 3 ? 'Done' : 'Next'}
-                      </Button>
-                      <ActionIcon 
-                        size="sm" 
-                        variant="subtle" 
-                        color="gray" 
-                        onClick={() => {
-                          haptics.light();
-                          setShowCoachMark(false);
-                        }}
-                        title="Dismiss tips"
-                      >
-                        <Trash2 size={13} />
-                      </ActionIcon>
-                    </Group>
+                <Group justify="space-between" align="flex-start" wrap="nowrap">
+                  <Group gap="xs" align="flex-start" wrap="nowrap">
+                    <ThemeIcon size={26} radius="xl" color={accentColor} variant="filled">
+                      <Sparkles size={14} />
+                    </ThemeIcon>
+                    <div>
+                      <Text size="xs" fw={700}>
+                        {coachStep === 0 && 'Tip 1: Queue Your Spots'}
+                        {coachStep === 1 && 'Tip 2: Rain & Freeze Pivot'}
+                        {coachStep === 2 && 'Tip 3: Student Transit Rules'}
+                        {coachStep === 3 && 'Tip 4: Island Route Tray'}
+                      </Text>
+                      <Text size="xs" c="dimmed" mt={2}>
+                        {coachStep === 0 && "Tap '+' on any card to add it to your day queue. Tap 'Tips & Transit' for insider details."}
+                        {coachStep === 1 && "Notice this switch in the header? Toggle it when it rains or sleets to swap outdoor walks."}
+                        {coachStep === 2 && "Tap the SOS icon anytime to verify museum student discounts and transit rules."}
+                        {coachStep === 3 && "The bottom tray groups your day by island so you never backtrack across bridges. Tap it to expand!"}
+                      </Text>
+                    </div>
                   </Group>
-                </Paper>
-              </motion.div>
+
+                  <Group gap={6} wrap="nowrap">
+                    <Button 
+                      size="compact-xs" 
+                      color={accentColor} 
+                      radius="md"
+                      onClick={nextCoachStep}
+                    >
+                      {coachStep === 3 ? 'Done' : 'Next'}
+                    </Button>
+                    <ActionIcon 
+                      size="sm" 
+                      variant="subtle" 
+                      color="gray" 
+                      onClick={() => {
+                        haptics.light();
+                        setShowCoachMark(false);
+                      }}
+                      title="Dismiss tips"
+                    >
+                      <Trash2 size={13} />
+                    </ActionIcon>
+                  </Group>
+                </Group>
+              </Paper>
             </Container>
           </Affix>
         )}
