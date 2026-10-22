@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { 
   CloudRain, 
   Sun, 
@@ -8,7 +8,6 @@ import {
   Check, 
   Plus, 
   Clock, 
-  MapPin, 
   Navigation, 
   Share2, 
   Trash2,
