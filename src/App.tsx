@@ -24,7 +24,9 @@ import {
   rem,
   Menu,
   ThemeIcon,
-  Progress
+  Progress,
+  Alert,
+  ScrollArea
 } from '@mantine/core';
 import { Notifications, notifications } from '@mantine/notifications';
 import { 
@@ -229,10 +231,10 @@ export default function App() {
       <AppShell
         header={{ height: 116 }}
         padding="0"
-        className="min-h-screen"
+        style={{ minHeight: '100vh' }}
       >
         {/* App Header */}
-        <AppShell.Header className="px-4 py-2.5">
+        <AppShell.Header px="md" py="xs">
           <Container size="xs" px={0}>
             <Group justify="space-between" align="center">
               <div>
@@ -240,11 +242,13 @@ export default function App() {
                   size="xs" 
                   fw={700} 
                   c={accentColor}
-                  className="font-mono tracking-widest uppercase"
+                  ff="monospace"
+                  tt="uppercase"
+                  lts={rem(1.5)}
                 >
                   Stockholm · MBA Guide
                 </Text>
-                <Title order={3} fw={700} className="tracking-tight">
+                <Title order={3} fw={700} style={{ letterSpacing: '-0.02em' }}>
                   Pick Your Day
                 </Title>
               </div>
@@ -311,10 +315,16 @@ export default function App() {
                 </Menu>
 
                 {/* Rain Mode Switch */}
-                <Box className={showCoachMark && coachStep === 1 ? 'ring-2 ring-sky-400 rounded-full p-0.5' : ''}>
+                <Box 
+                  style={{ 
+                    outline: (showCoachMark && coachStep === 1) ? `2px solid var(--mantine-color-blue-filled)` : undefined, 
+                    borderRadius: '9999px',
+                    padding: rem(2)
+                  }}
+                >
                   <Switch
                     size="md"
-                    color="sky"
+                    color="blue"
                     checked={rainMode}
                     onChange={(event) => setRainMode(event.currentTarget.checked)}
                     onLabel={<CloudRain size={13} color="white" />}
@@ -324,7 +334,12 @@ export default function App() {
                 </Box>
 
                 {/* Transit SOS Button */}
-                <Box className={showCoachMark && coachStep === 2 ? 'ring-2 ring-amber-400 rounded-full' : ''}>
+                <Box 
+                  style={{ 
+                    outline: (showCoachMark && coachStep === 2) ? `2px solid var(--mantine-color-yellow-filled)` : undefined, 
+                    borderRadius: '9999px' 
+                  }}
+                >
                   <ActionIcon
                     variant="light"
                     color="yellow"
@@ -339,8 +354,8 @@ export default function App() {
               </Group>
             </Group>
 
-            {/* Vibe Category Segmented Control */}
-            <Box mt="xs" className="overflow-x-auto no-scrollbar">
+            {/* Vibe Category Segmented Control with Mantine ScrollArea */}
+            <ScrollArea type="never" mt="xs" offsetScrollbars={false}>
               <SegmentedControl
                 size="xs"
                 radius="xl"
@@ -356,27 +371,24 @@ export default function App() {
                   { label: 'Nightlife', value: 'nightlife' },
                 ]}
               />
-            </Box>
+            </ScrollArea>
           </Container>
         </AppShell.Header>
 
         {/* Places Feed */}
-        <AppShell.Main className="pb-36 pt-3">
+        <AppShell.Main pt="xs" pb={rem(140)}>
           <Container size="xs" px="md">
             {rainMode && (
-              <Paper withBorder radius="lg" p="sm" mb="md">
-                <Group gap="xs" align="flex-start" wrap="nowrap">
-                  <CloudRain size={18} className="shrink-0 mt-0.5 text-sky-400" />
-                  <div>
-                    <Text size="xs" fw={700}>
-                      Rain & Cold Weather Mode Active
-                    </Text>
-                    <Text size="xs" c="dimmed" mt={2}>
-                      Outdoor walks hidden; showing indoor architecture gems (ArkDes) and covered food halls.
-                    </Text>
-                  </div>
-                </Group>
-              </Paper>
+              <Alert 
+                variant="light" 
+                color="blue" 
+                title="Rain & Cold Weather Mode Active" 
+                icon={<CloudRain size={18} />}
+                radius="lg" 
+                mb="md"
+              >
+                Outdoor cliff walks hidden; showing indoor architecture gems (ArkDes) and covered food halls.
+              </Alert>
             )}
 
             <Group justify="space-between" mb="xs" px={rem(2)}>
@@ -400,7 +412,11 @@ export default function App() {
                     withBorder
                     radius="lg"
                     p="md"
-                    className={`transition-all duration-150 ${isFirstCardTarget ? 'ring-2 ring-emerald-500 shadow-md' : ''}`}
+                    style={{
+                      borderColor: isFirstCardTarget ? 'var(--mantine-primary-color-filled)' : undefined,
+                      boxShadow: isFirstCardTarget ? '0 0 0 2px var(--mantine-primary-color-filled)' : undefined,
+                      transition: 'all 150ms ease'
+                    }}
                   >
                     <Group justify="space-between" align="flex-start" wrap="nowrap">
                       <Box style={{ flex: 1, minWidth: 0 }}>
@@ -422,15 +438,15 @@ export default function App() {
                           </Badge>
                           <Group gap={3} c="dimmed">
                             <Clock size={12} />
-                            <Text size="xs" span className="font-mono">{place.durationMin}m</Text>
+                            <Text size="xs" span ff="monospace">{place.durationMin}m</Text>
                           </Group>
                         </Group>
 
-                        <Title order={5} fw={600} className="leading-snug">
+                        <Title order={5} fw={600} style={{ lineHeight: 1.3 }}>
                           {place.title}
                         </Title>
 
-                        <Text size="xs" c="dimmed" lineClamp={2} mt={4} className="leading-relaxed">
+                        <Text size="xs" c="dimmed" lineClamp={2} mt={4} lh="md">
                           {place.mbaNote}
                         </Text>
 
@@ -480,9 +496,12 @@ export default function App() {
               shadow="xl"
               radius="xl"
               p="xs"
-              className={`cursor-pointer transition-transform active:scale-[0.99] backdrop-blur-xl ${
-                showCoachMark && coachStep === 3 ? 'ring-2 ring-emerald-500 shadow-2xl' : ''
-              }`}
+              style={{
+                cursor: 'pointer',
+                backdropFilter: 'blur(16px)',
+                boxShadow: (showCoachMark && coachStep === 3) ? '0 0 0 2px var(--mantine-primary-color-filled)' : undefined,
+                transition: 'transform 100ms ease'
+              }}
               onClick={() => setIsTrayOpen(true)}
             >
               <Group justify="space-between" align="center" px="xs">
@@ -492,7 +511,8 @@ export default function App() {
                     circle 
                     color={accentColor} 
                     variant="light"
-                    className="font-bold font-mono"
+                    ff="monospace"
+                    fw={700}
                   >
                     {dayQueue.length}
                   </Badge>
@@ -505,7 +525,7 @@ export default function App() {
                         {Math.round(totalDurationMin / 60 * 10) / 10} hrs
                       </Badge>
                     </Group>
-                    <Text size="xs" c="dimmed" className="font-mono">
+                    <Text size="xs" c="dimmed" ff="monospace">
                       Spend: {totalCostSek} SEK (~€{Math.round(totalCostSek / 11.2)})
                     </Text>
                   </div>
@@ -556,7 +576,7 @@ export default function App() {
                     bullet={<MapPin size={14} />}
                     title={
                       <Group gap="xs">
-                        <Text size="xs" fw={700} className="font-mono tracking-wider uppercase" c={accentColor}>
+                        <Text size="xs" fw={700} ff="monospace" tt="uppercase" lts={rem(1)} c={accentColor}>
                           Island Hub: {island}
                         </Text>
                         <Badge size="xs" variant="light" color="gray">
@@ -577,7 +597,7 @@ export default function App() {
                             <div>
                               <Text size="xs" fw={600}>{place.title}</Text>
                               <Text size="xs" c="dimmed" mt={2}>{place.transitTip}</Text>
-                              <Text size="xs" c={accentColor} mt={4} className="font-mono">
+                              <Text size="xs" c={accentColor} mt={4} ff="monospace">
                                 {place.costLabel} · {place.durationMin}m
                               </Text>
                             </div>
@@ -607,21 +627,21 @@ export default function App() {
                 <SimpleGrid cols={2} spacing="xs">
                   <div>
                     <Text size="xs" c="dimmed">Activities:</Text>
-                    <Text size="xs" fw={600} className="font-mono">{totalCostSek} SEK</Text>
+                    <Text size="xs" fw={600} ff="monospace">{totalCostSek} SEK</Text>
                   </div>
                   <div>
                     <Text size="xs" c="dimmed">Est. Duration:</Text>
-                    <Text size="xs" fw={600} className="font-mono">{Math.round(totalDurationMin / 60 * 10) / 10}h</Text>
+                    <Text size="xs" fw={600} ff="monospace">{Math.round(totalDurationMin / 60 * 10) / 10}h</Text>
                   </div>
                   <div>
                     <Text size="xs" c="dimmed">SL Transit:</Text>
-                    <Text size="xs" fw={600} className="font-mono">
+                    <Text size="xs" fw={600} ff="monospace">
                       {Object.keys(groupedByIsland).length} taps (~{Object.keys(groupedByIsland).length * 43} SEK)
                     </Text>
                   </div>
                   <div>
                     <Text size="xs" c="dimmed">Euro Equiv:</Text>
-                    <Text size="xs" fw={700} c={accentColor} className="font-mono">
+                    <Text size="xs" fw={700} c={accentColor} ff="monospace">
                       ~€{Math.round((totalCostSek + Object.keys(groupedByIsland).length * 43) / 11.2)}
                     </Text>
                   </div>
@@ -681,16 +701,16 @@ export default function App() {
           {activeDetailPlace && (
             <Stack gap="md">
               <div>
-                <Text size="xs" fw={700} c="dimmed" className="uppercase tracking-wider">
+                <Text size="xs" fw={700} c="dimmed" tt="uppercase" lts={rem(1)}>
                   Why It Fits An MBA Student
                 </Text>
-                <Text size="xs" mt={3} className="leading-relaxed">
+                <Text size="xs" mt={3} lh="md">
                   {activeDetailPlace.mbaNote}
                 </Text>
               </div>
 
               <div>
-                <Text size="xs" fw={700} c="dimmed" className="uppercase tracking-wider">
+                <Text size="xs" fw={700} c="dimmed" tt="uppercase" lts={rem(1)}>
                   Transit Tip
                 </Text>
                 <Text size="xs" mt={3}>
@@ -699,7 +719,7 @@ export default function App() {
               </div>
 
               <div>
-                <Text size="xs" fw={700} c="dimmed" className="uppercase tracking-wider">
+                <Text size="xs" fw={700} c="dimmed" tt="uppercase" lts={rem(1)}>
                   Student & Pricing Policy
                 </Text>
                 <Text size="xs" mt={3}>
@@ -751,20 +771,23 @@ export default function App() {
           }
         >
           <Stack gap="md">
-            <Paper withBorder radius="md" p="sm" className="border-amber-500/40 bg-amber-500/10">
-              <Text size="xs" fw={700} c="yellow.8">
-                Avoid the 1,850 SEK Transit Fine:
-              </Text>
-              <Text size="xs" mt={4} className="leading-relaxed">
+            <Alert 
+              variant="light" 
+              color="yellow" 
+              title="Avoid the 1,850 SEK Transit Fine:" 
+              icon={<AlertTriangle size={16} />}
+              radius="md"
+            >
+              <Text size="xs" lh="md">
                 SL public transit student fares strictly require an active Swedish Mecenat student card with the SL logo. Non-Swedish/French student cards do <em>not</em> qualify.
               </Text>
-              <Text size="xs" fw={600} c="yellow.8" mt={6} className="font-mono">
+              <Text size="xs" fw={700} mt={6} ff="monospace">
                 → Tap your French contactless card directly for standard 43 SEK fare (valid 75 min).
               </Text>
-            </Paper>
+            </Alert>
 
             <div>
-              <Text size="xs" fw={700} c="dimmed" className="uppercase tracking-wider">
+              <Text size="xs" fw={700} c="dimmed" tt="uppercase" lts={rem(1)}>
                 🎓 Where Your French MBA ID DOES Work
               </Text>
               <Text size="xs" mt={4}>
@@ -775,7 +798,7 @@ export default function App() {
             </div>
 
             <div>
-              <Text size="xs" fw={700} c="dimmed" className="uppercase tracking-wider">
+              <Text size="xs" fw={700} c="dimmed" tt="uppercase" lts={rem(1)}>
                 ✈️ Airport Transit (Arlanda)
               </Text>
               <Text size="xs" mt={4}>
@@ -831,7 +854,7 @@ export default function App() {
                 <Title order={3} fw={700}>
                   Welcome to Stockholm!
                 </Title>
-                <Text size="sm" c="dimmed" className="leading-relaxed">
+                <Text size="sm" c="dimmed" lh="md">
                   Tailored for an MBA student visiting from France. This app helps you build an island-by-island day plan with zero tourist traps.
                 </Text>
                 <Paper withBorder p="sm" radius="md">
@@ -847,23 +870,18 @@ export default function App() {
 
             {onboardingStep === 1 && (
               <Stack gap="sm" py="xs">
-                <ThemeIcon size={48} radius="xl" color="sky" variant="light">
+                <ThemeIcon size={48} radius="xl" color="blue" variant="light">
                   <CloudRain size={24} />
                 </ThemeIcon>
                 <Title order={3} fw={700}>
                   Nordic Weather Pivot
                 </Title>
-                <Text size="sm" c="dimmed" className="leading-relaxed">
+                <Text size="sm" c="dimmed" lh="md">
                   Stockholm skies change fast. Toggle <strong>Rain Mode</strong> anytime in the top bar to instantly swap outdoor cliff walks for covered design museums and food halls.
                 </Text>
-                <Paper withBorder p="sm" radius="md">
-                  <Text size="xs" fw={600} c="sky.4">
-                    🌧️ Rain Guarantee:
-                  </Text>
-                  <Text size="xs" c="dimmed" mt={2}>
-                    ArkDes, covered saluhalls, and the underground bedrock metro art caves keep you warm and dry.
-                  </Text>
-                </Paper>
+                <Alert variant="light" color="blue" title="🌧️ Rain Guarantee:" radius="md">
+                  ArkDes, covered saluhalls, and the underground bedrock metro art caves keep you warm and dry.
+                </Alert>
               </Stack>
             )}
 
@@ -875,17 +893,12 @@ export default function App() {
                 <Title order={3} fw={700}>
                   Transit & Student Rules
                 </Title>
-                <Text size="sm" c="dimmed" className="leading-relaxed">
+                <Text size="sm" c="dimmed" lh="md">
                   Stockholm is 100% cashless. Tap your contactless card or phone at metro turnstiles for 43 SEK.
                 </Text>
-                <Paper withBorder p="sm" radius="md" className="border-amber-500/40 bg-amber-500/10">
-                  <Text size="xs" fw={700} c="yellow.8">
-                    ⚠️ Don't buy SL student tickets:
-                  </Text>
-                  <Text size="xs" mt={2}>
-                    They require a Swedish Mecenat card. Foreign student IDs risk an <strong>1,850 SEK fine</strong>. Use standard 43 SEK taps!
-                  </Text>
-                </Paper>
+                <Alert variant="light" color="yellow" title="⚠️ Don't buy SL student tickets:" radius="md">
+                  They require a Swedish Mecenat card. Foreign student IDs risk an <strong>1,850 SEK fine</strong>. Use standard 43 SEK taps!
+                </Alert>
               </Stack>
             )}
 
@@ -931,15 +944,18 @@ export default function App() {
                 shadow="xl" 
                 radius="lg" 
                 p="sm" 
-                className="border-emerald-500/60 bg-neutral-900/95 text-neutral-100 backdrop-blur-xl animate-in slide-in-from-top duration-200"
+                style={{
+                  backdropFilter: 'blur(16px)',
+                  borderColor: 'var(--mantine-primary-color-filled)'
+                }}
               >
                 <Group justify="space-between" align="flex-start" wrap="nowrap">
                   <Group gap="xs" align="flex-start" wrap="nowrap">
-                    <ThemeIcon size={26} radius="xl" color="emerald" variant="filled">
+                    <ThemeIcon size={26} radius="xl" color={accentColor} variant="filled">
                       <Sparkles size={14} />
                     </ThemeIcon>
                     <div>
-                      <Text size="xs" fw={700} c="white">
+                      <Text size="xs" fw={700}>
                         {coachStep === 0 && 'Tip 1: Queue Your Spots'}
                         {coachStep === 1 && 'Tip 2: Rain & Freeze Pivot'}
                         {coachStep === 2 && 'Tip 3: Student Transit Rules'}
@@ -957,7 +973,7 @@ export default function App() {
                   <Group gap={6} wrap="nowrap">
                     <Button 
                       size="compact-xs" 
-                      color="emerald" 
+                      color={accentColor} 
                       radius="md"
                       onClick={nextCoachStep}
                     >
