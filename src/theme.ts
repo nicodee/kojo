@@ -1,5 +1,13 @@
 import { createTheme, MantineColorsTuple } from '@mantine/core';
 
+// 1. Default Mantine Theme
+export const defaultTheme = createTheme({
+  primaryColor: 'blue',
+  defaultRadius: 'md',
+  cursorType: 'pointer',
+});
+
+// 2. Custom Nordic Theme (Scandinavian Obsidian & Emerald)
 const nordicEmerald: MantineColorsTuple = [
   '#e6fcf5',
   '#c3fae8',
@@ -26,47 +34,16 @@ const nordicDark: MantineColorsTuple = [
   '#090a0f',
 ];
 
-export const theme = createTheme({
+export const customNordicTheme = createTheme({
   primaryColor: 'emerald',
   colors: {
     emerald: nordicEmerald,
     dark: nordicDark,
   },
   fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-  headings: {
-    fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-  },
   defaultRadius: 'md',
   cursorType: 'pointer',
-  components: {
-    Card: {
-      defaultProps: {
-        withBorder: true,
-        radius: 'lg',
-        padding: 'md',
-      },
-    },
-    Badge: {
-      defaultProps: {
-        radius: 'sm',
-      },
-    },
-    Modal: {
-      defaultProps: {
-        radius: 'lg',
-        overlayProps: {
-          backgroundOpacity: 0.75,
-          blur: 5,
-        },
-      },
-    },
-    Drawer: {
-      defaultProps: {
-        overlayProps: {
-          backgroundOpacity: 0.75,
-          blur: 5,
-        },
-      },
-    },
-  },
 });
+
+// Default fallback export
+export const theme = defaultTheme;
