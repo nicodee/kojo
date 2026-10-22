@@ -23,7 +23,6 @@ import {
   Box, 
   rem,
   Menu,
-  Stepper,
   ThemeIcon,
   Progress
 } from '@mantine/core';
@@ -49,9 +48,7 @@ import {
   Building2, 
   Beer,
   HelpCircle,
-  ArrowRight,
-  Layers,
-  Sparkle
+  ArrowRight
 } from 'lucide-react';
 import { defaultTheme, customNordicTheme } from './theme';
 import { STOCKHOLM_PLACES } from './data/places';
@@ -939,7 +936,7 @@ export default function App() {
                 <Group justify="space-between" align="flex-start" wrap="nowrap">
                   <Group gap="xs" align="flex-start" wrap="nowrap">
                     <ThemeIcon size={26} radius="xl" color="emerald" variant="filled">
-                      <Sparkle size={14} />
+                      <Sparkles size={14} />
                     </ThemeIcon>
                     <div>
                       <Text size="xs" fw={700} c="white">
@@ -957,7 +954,7 @@ export default function App() {
                     </div>
                   </Group>
 
-                  <Group gap={6} shrink={0}>
+                  <Group gap={6} wrap="nowrap">
                     <Button 
                       size="compact-xs" 
                       color="emerald" 
