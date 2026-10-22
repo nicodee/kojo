@@ -22,7 +22,10 @@ import {
   Divider, 
   Box, 
   rem,
-  Menu
+  Menu,
+  Stepper,
+  ThemeIcon,
+  Progress
 } from '@mantine/core';
 import { Notifications, notifications } from '@mantine/notifications';
 import { 
@@ -44,7 +47,11 @@ import {
   Landmark, 
   Compass, 
   Building2, 
-  Beer 
+  Beer,
+  HelpCircle,
+  ArrowRight,
+  Layers,
+  Sparkle
 } from 'lucide-react';
 import { defaultTheme, customNordicTheme } from './theme';
 import { STOCKHOLM_PLACES } from './data/places';
@@ -77,6 +84,50 @@ export default function App() {
   const [isTrayOpen, setIsTrayOpen] = useState<boolean>(false);
   const [showSosModal, setShowSosModal] = useState<boolean>(false);
   const [activeDetailId, setActiveDetailId] = useState<string | null>(null);
+
+  // Onboarding & Coach Marks State
+  const [showOnboarding, setShowOnboarding] = useState<boolean>(false);
+  const [onboardingStep, setOnboardingStep] = useState<number>(0);
+  const [showCoachMark, setShowCoachMark] = useState<boolean>(false);
+  const [coachStep, setCoachStep] = useState<number>(0);
+
+  // Check initial visit for onboarding
+  useEffect(() => {
+    try {
+      const seen = localStorage.getItem('sthlm_onboarding_completed');
+      if (!seen) {
+        setShowOnboarding(true);
+      }
+    } catch (e) {
+      console.warn(e);
+    }
+  }, []);
+
+  const completeOnboarding = (startCoach: boolean = true) => {
+    try {
+      localStorage.setItem('sthlm_onboarding_completed', 'true');
+    } catch (e) {
+      console.warn(e);
+    }
+    setShowOnboarding(false);
+    if (startCoach) {
+      setCoachStep(0);
+      setShowCoachMark(true);
+    }
+  };
+
+  const nextCoachStep = () => {
+    if (coachStep < 3) {
+      setCoachStep((prev) => prev + 1);
+    } else {
+      setShowCoachMark(false);
+      notifications.show({
+        title: 'You are all set!',
+        message: 'Tap any card or switch vibes to build your perfect Stockholm day.',
+        color: accentColor,
+      });
+    }
+  };
 
   // Active theme & color scheme selection
   const activeTheme = useMemo(() => {
@@ -202,6 +253,21 @@ export default function App() {
               </div>
 
               <Group gap="xs">
+                {/* Onboarding Help Re-trigger */}
+                <ActionIcon
+                  variant="subtle"
+                  color="gray"
+                  size="lg"
+                  radius="xl"
+                  onClick={() => {
+                    setOnboardingStep(0);
+                    setShowOnboarding(true);
+                  }}
+                  title="How this app works (Tour)"
+                >
+                  <HelpCircle size={18} />
+                </ActionIcon>
+
                 {/* 3-Theme Menu Selector: Default Light, Default Dark, Custom Nordic */}
                 <Menu shadow="md" width={160} position="bottom-end">
                   <Menu.Target>
@@ -248,27 +314,31 @@ export default function App() {
                 </Menu>
 
                 {/* Rain Mode Switch */}
-                <Switch
-                  size="md"
-                  color="sky"
-                  checked={rainMode}
-                  onChange={(event) => setRainMode(event.currentTarget.checked)}
-                  onLabel={<CloudRain size={13} color="white" />}
-                  offLabel={<Sun size={13} color="#f59e0b" />}
-                  aria-label="Toggle Rain Mode"
-                />
+                <Box className={showCoachMark && coachStep === 1 ? 'ring-2 ring-sky-400 rounded-full p-0.5' : ''}>
+                  <Switch
+                    size="md"
+                    color="sky"
+                    checked={rainMode}
+                    onChange={(event) => setRainMode(event.currentTarget.checked)}
+                    onLabel={<CloudRain size={13} color="white" />}
+                    offLabel={<Sun size={13} color="#f59e0b" />}
+                    aria-label="Toggle Rain Mode"
+                  />
+                </Box>
 
                 {/* Transit SOS Button */}
-                <ActionIcon
-                  variant="light"
-                  color="yellow"
-                  radius="xl"
-                  size="lg"
-                  onClick={() => setShowSosModal(true)}
-                  title="Transit warnings & student ID rules"
-                >
-                  <AlertTriangle size={18} />
-                </ActionIcon>
+                <Box className={showCoachMark && coachStep === 2 ? 'ring-2 ring-amber-400 rounded-full' : ''}>
+                  <ActionIcon
+                    variant="light"
+                    color="yellow"
+                    radius="xl"
+                    size="lg"
+                    onClick={() => setShowSosModal(true)}
+                    title="Transit warnings & student ID rules"
+                  >
+                    <AlertTriangle size={18} />
+                  </ActionIcon>
+                </Box>
               </Group>
             </Group>
 
@@ -323,15 +393,17 @@ export default function App() {
 
             {/* Place Cards Stack */}
             <Stack gap="sm">
-              {filteredPlaces.map((place) => {
+              {filteredPlaces.map((place, idx) => {
                 const isQueued = dayQueue.includes(place.id);
+                const isFirstCardTarget = idx === 0 && showCoachMark && coachStep === 0;
+
                 return (
                   <Card 
                     key={place.id}
                     withBorder
                     radius="lg"
                     p="md"
-                    className="transition-all duration-150"
+                    className={`transition-all duration-150 ${isFirstCardTarget ? 'ring-2 ring-emerald-500 shadow-md' : ''}`}
                   >
                     <Group justify="space-between" align="flex-start" wrap="nowrap">
                       <Box style={{ flex: 1, minWidth: 0 }}>
@@ -411,7 +483,9 @@ export default function App() {
               shadow="xl"
               radius="xl"
               p="xs"
-              className="cursor-pointer transition-transform active:scale-[0.99] backdrop-blur-xl"
+              className={`cursor-pointer transition-transform active:scale-[0.99] backdrop-blur-xl ${
+                showCoachMark && coachStep === 3 ? 'ring-2 ring-emerald-500 shadow-2xl' : ''
+              }`}
               onClick={() => setIsTrayOpen(true)}
             >
               <Group justify="space-between" align="center" px="xs">
@@ -723,6 +797,190 @@ export default function App() {
             </Button>
           </Stack>
         </Modal>
+
+        {/* 1. WELCOME ONBOARDING MODAL (Multi-step) */}
+        <Modal
+          opened={showOnboarding}
+          onClose={() => completeOnboarding(false)}
+          centered
+          size="md"
+          radius="xl"
+          withCloseButton={false}
+          padding="lg"
+        >
+          <Stack gap="md">
+            {/* Progress indicator */}
+            <Group justify="space-between" align="center">
+              <Badge variant="light" color={accentColor} size="sm">
+                Step {onboardingStep + 1} of 3
+              </Badge>
+              <Button 
+                variant="subtle" 
+                color="gray" 
+                size="xs" 
+                onClick={() => completeOnboarding(false)}
+              >
+                Skip Tour
+              </Button>
+            </Group>
+
+            <Progress value={((onboardingStep + 1) / 3) * 100} color={accentColor} size="xs" radius="xl" />
+
+            {onboardingStep === 0 && (
+              <Stack gap="sm" py="xs">
+                <ThemeIcon size={48} radius="xl" color={accentColor} variant="light">
+                  <Compass size={24} />
+                </ThemeIcon>
+                <Title order={3} fw={700}>
+                  Welcome to Stockholm!
+                </Title>
+                <Text size="sm" c="dimmed" className="leading-relaxed">
+                  Tailored for an MBA student visiting from France. This app helps you build an island-by-island day plan with zero tourist traps.
+                </Text>
+                <Paper withBorder p="sm" radius="md">
+                  <Text size="xs" fw={600}>
+                    💡 How it works:
+                  </Text>
+                  <Text size="xs" c="dimmed" mt={2}>
+                    Browse curated places, filter by your current vibe, and tap <strong>'+'</strong> to queue them into your day.
+                  </Text>
+                </Paper>
+              </Stack>
+            )}
+
+            {onboardingStep === 1 && (
+              <Stack gap="sm" py="xs">
+                <ThemeIcon size={48} radius="xl" color="sky" variant="light">
+                  <CloudRain size={24} />
+                </ThemeIcon>
+                <Title order={3} fw={700}>
+                  Nordic Weather Pivot
+                </Title>
+                <Text size="sm" c="dimmed" className="leading-relaxed">
+                  Stockholm skies change fast. Toggle <strong>Rain Mode</strong> anytime in the top bar to instantly swap outdoor cliff walks for covered design museums and food halls.
+                </Text>
+                <Paper withBorder p="sm" radius="md">
+                  <Text size="xs" fw={600} c="sky.4">
+                    🌧️ Rain Guarantee:
+                  </Text>
+                  <Text size="xs" c="dimmed" mt={2}>
+                    ArkDes, covered saluhalls, and the underground bedrock metro art caves keep you warm and dry.
+                  </Text>
+                </Paper>
+              </Stack>
+            )}
+
+            {onboardingStep === 2 && (
+              <Stack gap="sm" py="xs">
+                <ThemeIcon size={48} radius="xl" color="yellow" variant="light">
+                  <AlertTriangle size={24} />
+                </ThemeIcon>
+                <Title order={3} fw={700}>
+                  Transit & Student Rules
+                </Title>
+                <Text size="sm" c="dimmed" className="leading-relaxed">
+                  Stockholm is 100% cashless. Tap your contactless card or phone at metro turnstiles for 43 SEK.
+                </Text>
+                <Paper withBorder p="sm" radius="md" className="border-amber-500/40 bg-amber-500/10">
+                  <Text size="xs" fw={700} c="yellow.8">
+                    ⚠️ Don't buy SL student tickets:
+                  </Text>
+                  <Text size="xs" mt={2}>
+                    They require a Swedish Mecenat card. Foreign student IDs risk an <strong>1,850 SEK fine</strong>. Use standard 43 SEK taps!
+                  </Text>
+                </Paper>
+              </Stack>
+            )}
+
+            <Group justify="space-between" mt="sm">
+              {onboardingStep > 0 ? (
+                <Button 
+                  variant="default" 
+                  size="xs" 
+                  onClick={() => setOnboardingStep((s) => s - 1)}
+                >
+                  Back
+                </Button>
+              ) : <Box />}
+
+              {onboardingStep < 2 ? (
+                <Button 
+                  color={accentColor} 
+                  size="xs" 
+                  rightSection={<ArrowRight size={14} />}
+                  onClick={() => setOnboardingStep((s) => s + 1)}
+                >
+                  Next
+                </Button>
+              ) : (
+                <Button 
+                  color={accentColor} 
+                  size="xs" 
+                  onClick={() => completeOnboarding(true)}
+                >
+                  Start Interactive Tour
+                </Button>
+              )}
+            </Group>
+          </Stack>
+        </Modal>
+
+        {/* 2. INTERACTIVE COACH MARKS BANNER (Walkthrough) */}
+        {showCoachMark && (
+          <Affix position={{ top: 124, left: 16, right: 16 }} zIndex={200}>
+            <Container size="xs" px={0}>
+              <Paper 
+                withBorder 
+                shadow="xl" 
+                radius="lg" 
+                p="sm" 
+                className="border-emerald-500/60 bg-neutral-900/95 text-neutral-100 backdrop-blur-xl animate-in slide-in-from-top duration-200"
+              >
+                <Group justify="space-between" align="flex-start" wrap="nowrap">
+                  <Group gap="xs" align="flex-start" wrap="nowrap">
+                    <ThemeIcon size={26} radius="xl" color="emerald" variant="filled">
+                      <Sparkle size={14} />
+                    </ThemeIcon>
+                    <div>
+                      <Text size="xs" fw={700} c="white">
+                        {coachStep === 0 && 'Tip 1: Queue Your Spots'}
+                        {coachStep === 1 && 'Tip 2: Rain & Freeze Pivot'}
+                        {coachStep === 2 && 'Tip 3: Student Transit Rules'}
+                        {coachStep === 3 && 'Tip 4: Island Route Tray'}
+                      </Text>
+                      <Text size="xs" c="dimmed" mt={2}>
+                        {coachStep === 0 && "Tap '+' on any card to add it to your day queue. Tap 'Tips & Transit' for insider details."}
+                        {coachStep === 1 && "Notice this switch in the header? Toggle it when it rains or sleets to swap outdoor walks."}
+                        {coachStep === 2 && "Tap the SOS icon anytime to verify museum student discounts and transit rules."}
+                        {coachStep === 3 && "The bottom tray groups your day by island so you never backtrack across bridges. Tap it to expand!"}
+                      </Text>
+                    </div>
+                  </Group>
+
+                  <Group gap={6} shrink={0}>
+                    <Button 
+                      size="compact-xs" 
+                      color="emerald" 
+                      radius="md"
+                      onClick={nextCoachStep}
+                    >
+                      {coachStep === 3 ? 'Done' : 'Next'}
+                    </Button>
+                    <ActionIcon 
+                      size="sm" 
+                      variant="subtle" 
+                      color="gray" 
+                      onClick={() => setShowCoachMark(false)}
+                      title="Dismiss tips"
+                    >
+                      <Trash2 size={13} />
+                    </ActionIcon>
+                  </Group>
+                </Group>
+              </Paper>
+            </Container>
+          </Affix>
+        )}
       </AppShell>
     </MantineProvider>
   );
